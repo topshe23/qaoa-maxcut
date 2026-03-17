@@ -6,8 +6,9 @@ from qiskit_aer import AerSimulator
 from qiskit import transpile
 from qiskit.circuit import QuantumCircuit
 from scipy.optimize import minimize
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.circuit import build_graph, build_qaoa_circuit, compute_maxcut_value
-
 
 def run_circuit(circuit, parameter_values, shots=1024):
     """
