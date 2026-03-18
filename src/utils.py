@@ -115,7 +115,48 @@ def compute_cut(bitstring, G):
     """Helper to compute cut value."""
     return sum(1 for u, v in G.edges() if bitstring[u] != bitstring[v])
 
+def plot_p_layers(p_values, approx_ratios, expected_cuts, save_path):
+    """Plots p layers vs approximation ratio and expected cut."""
+    fig, ax1 = plt.subplots(figsize=(9, 5))
 
+    color1 = 'steelblue'
+    ax1.bar(p_values, approx_ratios, color=color1, alpha=0.7,
+            label='Approximation Ratio', zorder=3)
+    ax1.set_xlabel('QAOA Layers (p)', fontsize=13)
+    ax1.set_ylabel('Approximation Ratio', fontsize=13, color=color1)
+    ax1.set_ylim(0, 1.2)
+    ax1.axhline(y=1.0, color='green', linestyle='--',
+                linewidth=1.8, label='Optimal ratio = 1.0')
+    ax1.set_xticks(p_values)
+
+    # Annotate bars
+    for p, ratio in zip(p_values, approx_ratios):
+        ax1.text(p, ratio + 0.02, f'{ratio:.3f}',
+                 ha='center', fontsize=10, fontweight='bold', color=color1)
+
+    ax2 = ax1.twinx()
+    color2 = 'darkorange'
+    ax2.plot(p_values, expected_cuts, marker='o', color=color2,
+             linewidth=2.5, markersize=8, label='Expected Cut Value')
+    ax2.set_ylabel('Expected Cut Value', fontsize=13, color=color2)
+    ax2.set_ylim(2.5, 4.5)
+
+    # Annotate expected cuts
+    for p, ec in zip(p_values, expected_cuts):
+        ax2.text(p + 0.08, ec + 0.05, f'{ec:.2f}',
+                 fontsize=9, color=color2)
+
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, fontsize=10, loc='lower right')
+
+    ax1.set_title('QAOA Layers (p) vs Solution Quality', fontsize=15, fontweight='bold')
+    ax1.grid(True, alpha=0.3, axis='y')
+    plt.tight_layout()
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    plt.savefig(save_path, dpi=150)
+    plt.close()
+    print(f"Plot saved to {save_path}")
 def save_results(data_dict, filepath):
     """Saves results to CSV."""
     df = pd.DataFrame(data_dict)

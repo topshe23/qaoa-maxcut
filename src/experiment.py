@@ -118,6 +118,12 @@ if __name__ == "__main__":
          'expected_cut': expected_cuts_p},
         'results/data/p_layers_results.csv'
     )
+    # Import and plot p layers
+    from src.utils import plot_p_layers
+    plot_p_layers(
+        p_values, approx_ratios, expected_cuts_p,
+        'results/plots/p_layers_vs_quality.png'
+    )
 
     # --- Experiment 3: Shots ---
     shot_counts, expected_cuts_s, best_cuts_s = experiment_shots_vs_accuracy()
